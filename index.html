@@ -23,7 +23,7 @@ select,input,textarea{width:100%;padding:11px;border:1px solid #c7d8e8;border-ra
 </style>
 </head>
 <body>
-<header><div class="wrap"><div class="brand" id="brand">🏐 GAA Skills App</div><div class="version">Clean rebuild v1.1</div></div></header>
+<header><div class="wrap"><div class="brand" id="brand">🏐 GAA Skills App</div><div class="version">Clean rebuild v1.2</div></div></header>
 <main class="wrap">
 <div class="tabs" id="tabs">
 <button type="button" class="tab active" id="coachTab" onclick="showPanel('coach')">🏟 Coach Mode</button>
@@ -65,7 +65,7 @@ select,input,textarea{width:100%;padding:11px;border:1px solid #c7d8e8;border-ra
 <section id="home" class="panel">
 <div id="homeSetup" class="card controls">
 <h2>Create a weekly home programme</h2>
-<p class="meta">Choose the programme, then create a parent-only link. Parents will not see Coach Mode.</p>
+<p class="meta"><b>Coach:</b> choose only the age, week and skills. <b>The parent enters the child’s name and chooses the reward after opening the link.</b></p>
 <div class="grid">
 <div><label>Age group</label><select id="homeAge"><option>U7</option><option selected>U8</option><option>U9</option><option>U10</option><option>U11</option><option>U12</option></select></div>
 <div><label>Week</label><input id="week" value="Winter Skills · Week 1"></div>
@@ -110,7 +110,7 @@ window.generateSession=function(){var ss=selectedSkills("coachSkills");if(!ss.le
 function programme(){var ss=selectedSkills("homeSkills"),arr=[];for(var i=0;i<ss.length&&i<4;i++)arr.push({skill:ss[i],target:i%2?"10 successful attempts":"Practise for 10 minutes",drill:DRILLS[ss[i]][0]});return {age:el("homeAge").value,week:el("week").value,skills:arr}}
 function encodeData(o){var json=encodeURIComponent(JSON.stringify(o)),b64=btoa(unescape(json));return b64.replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
 function decodeData(v){try{v=v.replace(/-/g,"+").replace(/_/g,"/");while(v.length%4)v+="=";return JSON.parse(decodeURIComponent(escape(atob(v))))}catch(e){return null}}
-window.generateHome=function(){var d=programme();if(!d.skills.length){el("shareArea").innerHTML='<div class="notice">Please choose at least one Home Skill.</div>';return}renderHome(d,false);var url=location.origin+location.pathname+"?home="+encodeData(d);el("shareArea").innerHTML='<div class="sharebox"><b>Parent Home Skills link</b><p class="meta">This opens only the assigned home programme.</p><input id="parentLink" readonly value="'+escapeHtml(url)+'"><div class="row" style="margin-top:9px"><button type="button" class="btn" onclick="copyParentLink()">Copy parent link</button><button type="button" class="btn secondary" onclick="previewParent()">Preview parent page</button></div></div>'};
+window.generateHome=function(){var d=programme();if(!d.skills.length){el("shareArea").innerHTML='<div class="notice">Please choose at least one Home Skill.</div>';return}el("homeOut").innerHTML="";var url=location.origin+location.pathname+"?home="+encodeData(d);el("shareArea").innerHTML='<div class="sharebox"><b>Parent Home Skills link ready</b><p class="meta">The coach has set the programme only. When the parent opens this link, they will be asked to enter the child\'s name and choose the reward themselves.</p><input id="parentLink" readonly value="'+escapeHtml(url)+'"><div class="row" style="margin-top:9px"><button type="button" class="btn" onclick="copyParentLink()">Copy parent link</button><button type="button" class="btn secondary" onclick="previewParent()">Preview exactly what the parent sees</button></div></div>'};
 window.copyParentLink=function(){var x=el("parentLink");if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(x.value)}else{x.select();document.execCommand("copy")}};
 window.previewParent=function(){window.open(el("parentLink").value,"_blank")};
 function progressKey(){return "gaa-home-"+(new URLSearchParams(location.search).get("home")||"coach")}
